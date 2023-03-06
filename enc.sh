@@ -1,27 +1,32 @@
 #!/bin/bash
 
-# Check if the script is being run on a Debian-based system
+# CEK OS (DEBIAN ONLY)
 if [[ $(lsb_release -is) != "Debian" && $(lsb_release -is) != "Ubuntu" ]]
 then
     echo "This script is only supported on Debian-based systems."
     exit
 fi
 
-# Check if shc is installed
+# CEK SHC 
 if ! command -v shc &> /dev/null
 then
-    echo "shc is not installed. Please install it before running this script."
-    exit
+    echo "shc is not installed. Installing shc..."
+    sudo apt-get update
+    sudo apt-get install shc
+    echo "shc installed successfully."
+    read -p "Press enter to continue..."
 fi
 
-# Create the ORY directory if it doesn't exist
+# BUAT FOLDER UNTUK BACKUP FILE ORY
 if [[ ! -d /root/enc/ORY ]]
 then
     mkdir /root/enc/ORY
 fi
 
 while true; do
-    # Display menu options
+    
+    # MENU
+    clear
     echo "Please choose an option:"
     echo "1. Encrypt files in /root/enc/"
     echo "2. Exit"
@@ -30,23 +35,28 @@ while true; do
 
     case $choice in
         1)
-            # Loop through all files in /root/enc/
+            # CEK FILE /root/enc
             for file in /root/enc/*
             do
-              # Check if the file is a regular file (not a directory or symlink)
               if [[ -f $file ]]
               then
-                # Copy the original file to /root/enc/ORY
+                # BAKUP FILE ORY KE /root/enc/ORY
                 cp $file /root/enc/ORY/
                 
-                # Make the file executable
+                # CHMOD FILE SEBELUM ENC
                 chmod +x $file
                 
-                # Encrypt the file with shc and save it to a new file with the .x extension
+                # ENC SEMUA FILE DI /root/enc
                 shc -f $file -o $file.x
                 
-                # Remove the original file
+                # PADAM FILE ORY 
                 rm $file
+                
+                # PADAM file.x.c
+                rm $file.x.c
+                
+                # RENAME ENC FILE
+                mv $file.x ${file%.sh}
               fi
             done
             echo "Files encrypted."
