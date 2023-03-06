@@ -56,7 +56,7 @@ while true; do
                 rm $file.x.c
                 
                 # RENAME ENC FILE
-                mv $file.x ${file%.sh}
+                mv $file.x ${file%}
               fi
             done
             echo "Files encrypted."
