@@ -1,4 +1,5 @@
 #!/bin/bash
+clear
 
 echo "Clients:"
 awk '/^###/ {print NR".",$2,$3,$4}' "/root/ssh.txt"
